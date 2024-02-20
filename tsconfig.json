@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "rootDir": "./", 
+    "outDir": "dist", 
+    "baseUrl": "./",
+    "esModuleInterop": true
+  },
+  "include": ["./models/**/*"],
+  "exclude": ["node_modules"]
+}

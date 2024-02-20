@@ -1,0 +1,26 @@
+{
+  "id": "salesforce",
+  "name": "Salesforce",
+  "author": "HenriChabrand",
+  "version": "1.0.0",
+  "authentication": {
+    "type": "oauth2",
+    "authorize_url": "https://login.salesforce.com/services/oauth2/authorize",
+    "access_token_url": "https://login.salesforce.com/services/oauth2/token",
+    "configs": []
+  },
+  "proxy": {
+    "base_url": "https://api.salesforce.com",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+  "scripts": {
+    "build": "morph build",
+    "dev": "morph develop"
+  },
+  "dependencies": {
+    "@run-morph/sdk": "^1.0.15",
+    "@run-morph/models": "^1.0.2"
+  }
+}
