@@ -4,46 +4,69 @@ import { List, Resource, Metadata, Error }  from '@run-morph/sdk';
 // Define metadata for the Salesforce Contact model
 const metadata:Metadata<Crm.Contact> = {
 	model: Crm.Contact,
-	scopes: ['api', 'refresh_token', 'read']
+	scopes: []
 };
 
 // Export a new List operation
 export default new List( async ( runtime, { page_size, cursor, sort, filter }) => { 
 
-	// Construct Salesforce SOQL (Salesforce Object Query Language) query
-	let soql = "SELECT Id, FirstName, LastName, Email, Phone, CreatedDate, LastModifiedDate FROM Contact";
-	const sf_limit = page_size > 200 || page_size === null ? 200 : page_size;
-	soql += ` LIMIT ${sf_limit}`;
+    let soql = "SELECT Id, FirstName, LastName, Email, Phone, CreatedDate, LastModifiedDate FROM Contact";
+    const sf_limit = page_size > 200 || page_size === null ? 200 : page_size;
+	
+    // Initialize the WHERE clause based on the cursor
+    let whereClauses = [];
 
-	const sf_sort = sort ? mapSort(sort) : null;
-	if (sf_sort) {
-		soql += ` ORDER BY ${sf_sort}`;
-	}
+    // Apply filters from the mapFilter function if any filters are provided
+    if (filter && Object.keys(filter).length > 0) {
+        const filterClause = mapFilter(filter);
+        if (filterClause) {
+            whereClauses.push(filterClause);
+        }
+    }
 
-	const sf_filter = filter ? mapFilter(filter) : null;
-	if(sf_filter){
-		soql += ` WHERE ${sf_filter}`;
-	}
+    // Combine all WHERE clauses
+    if (whereClauses.length > 0) {
+        soql += " WHERE " + whereClauses.join(' AND ');
+    }
 
-	// Call Salesforce API
-	const response = await runtime.proxy({
-		method: 'GET',
-		path: `/services/data/v49.0/query?q=${encodeURI(soql)}`
-	});
+    // Adjust the ORDER BY clause based on the sort parameter
+    const orderByClause = mapSort(sort);
+    soql += ` ORDER BY ${orderByClause} LIMIT ${sf_limit}`;
 
-	if(response.totalSize === 0){
+	// Set offset
+	if (cursor?.offset) {
+		soql  += ` OFFSET ${cursor.offset}`;
+    }
+
+    // Call Salesforce API
+    const response = await runtime.proxy({
+        method: 'GET',
+        path: `/services/data/v49.0/query`,
+        params: {
+            q: soql
+        }
+    });
+
+    if(response.totalSize === 0){
         throw new Error(Error.Type.UNKNOWN_ERROR, "No contacts found");
     }
 
-	// Prepare the next cursor and map resources for the response
-	const next = response.done ? null : response.nextRecordUrl.match(/-[^-]*$/)[0];
-	const resources = response.records.map(mapResource);
+    // Assume there are more results if the number of records returned equals the limit
+    let next = null;
+    if (response.records.length === sf_limit) {
+        next = {
+			offset: cursor?.offset ? cursor.offset + response.records.length : response.records.length
+		}
+    }
 
-	// Return the resources and the next cursor for pagination
-	return { 
-		data:  resources, 
-		next: next 
-	};
+	console.log('next',next)
+
+    const resources = response.records.map(mapResource);
+
+    return { 
+        data:  resources, 
+        next: next 
+    };
 
 }, metadata );
 
