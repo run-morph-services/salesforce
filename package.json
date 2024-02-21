@@ -17,7 +17,7 @@
     "scopes":["api", "refresh_token", "offline_access"]
   },
   "proxy": {
-    "base_url": "{configs.base_url}",
+    "base_url": "${configs.base_url}",
     "headers": {
      "Content-Type": "application/json"
     }
