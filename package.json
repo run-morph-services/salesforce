@@ -11,7 +11,7 @@
     "scopes":["api", "refresh_token", "offline_access"]
   },
   "proxy": {
-    "base_url": "${raw_tokens.instance_url}",
+    "base_url": "${raw_tokens.instance_url}/services/data/v49.0",
     "headers": {
      "Content-Type": "application/json"
     }

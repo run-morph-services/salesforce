@@ -41,7 +41,7 @@ export default new List( async ( runtime, { page_size, cursor, sort, filter }) =
     // Call Salesforce API
     const response = await runtime.proxy({
         method: 'GET',
-        path: `/services/data/v49.0/query`,
+        path: `/query`,
         params: {
             q: soql
         }
