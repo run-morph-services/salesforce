@@ -3,21 +3,15 @@
   "name": "Salesforce",
   "author": "HenriChabrand",
   "version": "1.0.0",
-  "connection": {
+  "authentication": {
     "type": "oauth2",
     "authorize_url": "https://login.salesforce.com/services/oauth2/authorize",
     "access_token_url": "https://login.salesforce.com/services/oauth2/token",
-    "configs": [
-      {
-        "id": "base_url",
-        "type": "token_response_extract",
-        "path": "instance_url"
-      }
-    ],
+    "configs": [],
     "scopes":["api", "refresh_token", "offline_access"]
   },
   "proxy": {
-    "base_url": "${configs.base_url}",
+    "base_url": "${raw_tokens.instance_url}",
     "headers": {
      "Content-Type": "application/json"
     }
