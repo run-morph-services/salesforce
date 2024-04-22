@@ -8,20 +8,24 @@
     "authorize_url": "https://login.salesforce.com/services/oauth2/authorize",
     "access_token_url": "https://login.salesforce.com/services/oauth2/token",
     "configs": [],
-    "scopes":["api", "refresh_token", "offline_access"]
+    "scopes": [
+      "api",
+      "refresh_token",
+      "offline_access"
+    ]
   },
   "proxy": {
     "base_url": "${raw_tokens.instance_url}/services/data/v49.0",
     "headers": {
-     "Content-Type": "application/json"
+      "Content-Type": "application/json"
     }
-   },
+  },
   "scripts": {
     "build": "morph build",
     "dev": "morph develop"
   },
   "dependencies": {
-    "@run-morph/sdk": "^1.0.15",
-    "@run-morph/models": "^1.0.2"
+    "@run-morph/models": "^1.0.9",
+    "@run-morph/sdk": "^1.1.0"
   }
 }

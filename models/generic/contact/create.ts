@@ -1,12 +1,9 @@
-import { Crm }  from "@run-morph/models";
+import { Generic }  from "@run-morph/models";
 import { Create, ResourceEvent, Metadata, Error }  from "@run-morph/sdk";
 
-const metadata:Metadata<Crm.Contact> = {
-    model: Crm.Contact,
-	scopes:[
-        'crm.objects.contacts.write',
-        'crm.schemas.contacts.write'
-    ]
+const metadata:Metadata<Generic.Contact> = {
+    model: Generic.Contact,
+	scopes:[]
 };
 
 export default new Create( async (runtime, { data }) => { 
@@ -38,7 +35,7 @@ export default new Create( async (runtime, { data }) => {
             id: response.id,
             created_at: new Date(response.createdAt).toISOString(),
             updated_at: new Date(response.updatedAt).toISOString()
-        }, Crm.Contact)  
+        }, Generic.Contact)  
        
         return resource;
     } else {

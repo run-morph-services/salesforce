@@ -1,9 +1,9 @@
-import { Crm }  from '@run-morph/models';
+import { Generic }  from '@run-morph/models';
 import { List, Resource, Metadata, Error }  from '@run-morph/sdk';
 
 // Define metadata for the Salesforce Contact model
-const metadata:Metadata<Crm.Contact> = {
-	model: Crm.Contact,
+const metadata:Metadata<Generic.Contact> = {
+	model: Generic.Contact,
 	scopes: []
 };
 
@@ -74,16 +74,17 @@ export default new List( async ( runtime, { page_size, cursor, sort, filter }) =
 // Helper function to map Salesforce contacts to Contact resources
 function mapResource(sf_contact){
 	return new Resource({ 
-		id: sf_contact.Id,
+		id: sf_contact.Id.substring(0, 15),
 		data: {
 			first_name: sf_contact.FirstName,
 			last_name: sf_contact.LastName,
 			email: sf_contact.Email,
 			phone: sf_contact.Phone
 		},
-			created_at: new Date(sf_contact.CreatedDate).toISOString(),
-			updated_at: new Date(sf_contact.LastModifiedDate).toISOString()
-		}, Crm.Contact)
+        remote_data: sf_contact,
+        created_at: new Date(sf_contact.CreatedDate).toISOString(),
+        updated_at: new Date(sf_contact.LastModifiedDate).toISOString()
+		}, Generic.Contact)
 }
 
 // Helper function to map sorting parameters
@@ -107,7 +108,8 @@ function mapFilter(filter) {
     const filterMapping = {
         first_name: 'FirstName',
         last_name: 'LastName',
-        email: 'Email'
+        email: 'Email',
+        phone: 'Phone'
     };
 
     let sf_filters = [];
